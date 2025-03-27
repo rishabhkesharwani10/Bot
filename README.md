@@ -33,5 +33,3 @@ If you still get an error or get stuck, feel free to message me on Buy Me a Coff
 https://buymeacoffee.com/codingnepal
 
 ---
-
-Happy coding!
