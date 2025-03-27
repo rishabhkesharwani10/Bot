@@ -8,7 +8,7 @@ let userMessage = null; // Variable to store user's message
 const inputInitHeight = chatInput.scrollHeight;
 
 // API configuration
-const API_KEY = "AIzaSyAHKXKGcvdYIYGydivQh94Lpr2LOx6__ps"; // Your API key here
+const API_KEY = "AIzaSyAuQdZqdvaXR6SzEmWS1kf4FNXjcmKhvKs"; // Your API key here
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 const createChatLi = (message, className) => {
@@ -24,34 +24,39 @@ const createChatLi = (message, className) => {
 const generateResponse = async (chatElement) => {
   const messageElement = chatElement.querySelector("p");
 
+  // Custom response for "who is your owner"
+  if (userMessage.toLowerCase().includes("who is your owner")) {
+      messageElement.textContent = "I am an AI Assistant, trained by Dataflow.";
+      chatbox.scrollTo(0, chatbox.scrollHeight);
+      return;
+  }
+
   // Define the properties and message for the API request
   const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: userMessage }],
-        },
-      ],
-    }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+          contents: [
+              {
+                  role: "user",
+                  parts: [{ text: userMessage }],
+              },
+          ],
+      }),
   };
 
-  // Send POST request to API, get response and set the reponse as paragraph text
   try {
-    const response = await fetch(API_URL, requestOptions);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error.message);
+      const response = await fetch(API_URL, requestOptions);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error.message);
 
-    // Get the API response text and update the message element
-    messageElement.textContent = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1");
+      // Display the API response
+      messageElement.textContent = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1");
   } catch (error) {
-    // Handle error
-    messageElement.classList.add("error");
-    messageElement.textContent = error.message;
+      messageElement.classList.add("error");
+      messageElement.textContent = error.message;
   } finally {
-    chatbox.scrollTo(0, chatbox.scrollHeight);
+      chatbox.scrollTo(0, chatbox.scrollHeight);
   }
 };
 
